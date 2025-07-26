@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fernando.fitlife.model.Personal
 import com.fernando.fitlife.model.Treino
 import com.fernando.fitlife.repository.TrainerRepository
 import kotlinx.coroutines.launch
@@ -13,6 +14,9 @@ class TrainerViewModel : ViewModel() {
     private val repo = TrainerRepository()
 
     var clients by mutableStateOf<List<String>>(emptyList())
+        private set
+
+    var trainers by mutableStateOf<List<Personal>>(emptyList())
         private set
 
     fun loadClients() {
@@ -26,4 +30,11 @@ class TrainerViewModel : ViewModel() {
             repo.addWorkout(clientId, treino)
         }
     }
+
+    fun loadTrainers() {
+        viewModelScope.launch {
+            trainers = repo.getTrainers()
+        }
+    }
+
 }

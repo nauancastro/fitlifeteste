@@ -15,6 +15,7 @@ import com.fernando.fitlife.viewmodel.FavoritosPersonalViewModel
 import com.fernando.fitlife.viewmodel.SettingsViewModel
 import com.fernando.fitlife.viewmodel.AuthViewModel
 import com.fernando.fitlife.viewmodel.TrainerViewModel
+import com.fernando.fitlife.viewmodel.WorkoutsViewModel
 
 @Composable
 fun FitLifeApp(
@@ -22,7 +23,8 @@ fun FitLifeApp(
     favoritosPersonalViewModel: FavoritosPersonalViewModel,
     settingsViewModel: SettingsViewModel,
     authViewModel: AuthViewModel,
-    trainerViewModel: TrainerViewModel
+    trainerViewModel: TrainerViewModel,
+    workoutsViewModel: WorkoutsViewModel
 ) {
     val navController = rememberNavController()
     val isDarkTheme by settingsViewModel.darkMode.collectAsState()
@@ -38,7 +40,8 @@ fun FitLifeApp(
                 favoritosPersonalViewModel = favoritosPersonalViewModel,
                 settingsViewModel = settingsViewModel,
                 authViewModel = authViewModel,
-                trainerViewModel = trainerViewModel
+                trainerViewModel = trainerViewModel,
+                workoutsViewModel = workoutsViewModel
             )
         }
     }

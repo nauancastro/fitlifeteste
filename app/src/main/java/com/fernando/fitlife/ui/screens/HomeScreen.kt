@@ -17,20 +17,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
-import com.fernando.fitlife.data.model.treinosMock
 import com.fernando.fitlife.model.Treino
 import com.fernando.fitlife.ui.components.BottomBar
 import com.fernando.fitlife.ui.components.BotaoFavorito
 import com.fernando.fitlife.ui.components.DetalheItem
 import com.fernando.fitlife.viewmodel.FavoritosViewModel
 import com.fernando.fitlife.viewmodel.AuthViewModel
+import com.fernando.fitlife.viewmodel.WorkoutsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
     favoritosViewModel: FavoritosViewModel = viewModel(),
-    authViewModel: AuthViewModel = viewModel()
+    authViewModel: AuthViewModel = viewModel(),
+    workoutsViewModel: WorkoutsViewModel = viewModel()
 ) {
     var expanded by remember { mutableStateOf(false) }
     val navBackStackEntry = navController.currentBackStackEntryAsState()
@@ -41,11 +42,12 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         if (authViewModel.currentUser != null) {
             authViewModel.loadRole()
+            workoutsViewModel.loadWorkouts(authViewModel.currentUser!!.uid)
         }
     }
 
     var busca by remember { mutableStateOf("") }
-    val treinosFiltrados = treinosMock.filter {
+    val treinosFiltrados = workoutsViewModel.workouts.filter {
         it.nome.contains(busca, ignoreCase = true)
     }
 
