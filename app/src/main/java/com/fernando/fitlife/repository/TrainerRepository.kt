@@ -58,15 +58,31 @@ class TrainerRepository {
         doc.set(treino.copy(id = doc.id)).await()
     }
 
-    suspend fun getWorkoutsForTrainer(trainerId: String): List<Pair<String, Treino>> {
-        val snapshot = firestore.collectionGroup("treinos")
-            .whereEqualTo("trainerId", trainerId)
+    suspend fun getWorkoutsForTrainer(trainerId: String): List<com.fernando.fitlife.model.TrainerWorkout> {
+        val clientsSnapshot = firestore.collection("users")
+            .whereEqualTo("role", "client")
             .get()
             .await()
-        return snapshot.documents.mapNotNull { doc ->
-            val clientId = doc.reference.parent.parent?.id ?: return@mapNotNull null
-            doc.id to doc.toObject(Treino::class.java)!!.copy(clientId = clientId)
+
+        val result = mutableListOf<com.fernando.fitlife.model.TrainerWorkout>()
+        for (clientDoc in clientsSnapshot.documents) {
+            val clientName = clientDoc.getString("nome") ?: clientDoc.id
+            val treinosSnapshot = clientDoc.reference.collection("treinos")
+                .whereEqualTo("trainerId", trainerId)
+                .get()
+                .await()
+            treinosSnapshot.documents.forEach { doc ->
+                val treino = doc.toObject(Treino::class.java) ?: return@forEach
+                result.add(
+                    com.fernando.fitlife.model.TrainerWorkout(
+                        id = doc.id,
+                        treino = treino.copy(clientId = clientDoc.id),
+                        clientName = clientName
+                    )
+                )
+            }
         }
+        return result
     }
 
     suspend fun deleteWorkout(clientId: String, workoutId: String) {

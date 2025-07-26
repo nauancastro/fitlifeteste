@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.fernando.fitlife.model.Client
 import com.fernando.fitlife.model.Personal
 import com.fernando.fitlife.model.Treino
+import com.fernando.fitlife.model.TrainerWorkout
 import com.fernando.fitlife.repository.TrainerRepository
 import kotlinx.coroutines.launch
 
@@ -24,7 +25,7 @@ class TrainerViewModel : ViewModel() {
     var clientWorkouts by mutableStateOf<List<Treino>>(emptyList())
         private set
 
-    var trainerWorkouts by mutableStateOf<List<Pair<String, Treino>>>(emptyList())
+    var trainerWorkouts by mutableStateOf<List<TrainerWorkout>>(emptyList())
         private set
 
     fun loadClients() {

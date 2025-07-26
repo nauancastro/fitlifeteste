@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.fernando.fitlife.model.Treino
+import com.fernando.fitlife.model.TrainerWorkout
 import com.fernando.fitlife.viewmodel.AuthViewModel
 import com.fernando.fitlife.viewmodel.TrainerViewModel
 
@@ -97,16 +98,16 @@ fun TrainerMenuScreen(
         if (trainerViewModel.trainerWorkouts.isNotEmpty()) {
             Text("Seus treinos:")
             LazyColumn(modifier = Modifier.height(200.dp)) {
-                items(trainerViewModel.trainerWorkouts) { pair ->
-                    val workoutId = pair.first
-                    val treino = pair.second
+                items(trainerViewModel.trainerWorkouts) { item ->
+                    val workoutId = item.id
+                    val treino = item.treino
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column {
                             Text(treino.nome)
-                            Text("Aluno: ${treino.clientId}")
+                            Text("Aluno: ${item.clientName}")
                         }
                         Row {
                             TextButton(onClick = {
