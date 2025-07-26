@@ -5,7 +5,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -20,13 +19,16 @@ fun TrainerMenuScreen(
 ) {
     var nome by remember { mutableStateOf("") }
     var descricao by remember { mutableStateOf("") }
-    var imagem by remember { mutableStateOf("") }
     var duracao by remember { mutableStateOf("") }
     var nivel by remember { mutableStateOf("") }
-    var selectedClient by remember { mutableStateOf<String?>(null) }
+    var selectedClient by remember { mutableStateOf<com.fernando.fitlife.model.Client?>(null) }
 
     LaunchedEffect(Unit) {
         trainerViewModel.loadClients()
+    }
+
+    LaunchedEffect(selectedClient) {
+        selectedClient?.let { trainerViewModel.loadWorkouts(it.id) }
     }
 
     Column(
@@ -37,7 +39,6 @@ fun TrainerMenuScreen(
     ) {
         OutlinedTextField(value = nome, onValueChange = { nome = it }, label = { Text("Nome do treino") })
         OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") })
-        OutlinedTextField(value = imagem, onValueChange = { imagem = it }, label = { Text("Imagem (nome do recurso)") })
         OutlinedTextField(value = duracao, onValueChange = { duracao = it }, label = { Text("Duração em minutos") })
         OutlinedTextField(value = nivel, onValueChange = { nivel = it }, label = { Text("Nível") })
 
@@ -48,30 +49,26 @@ fun TrainerMenuScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(client)
+                    Text(client.nome)
                     RadioButton(selected = selectedClient == client, onClick = { selectedClient = client })
                 }
             }
         }
 
-        val context = LocalContext.current
         Button(
             onClick = {
                 val client = selectedClient
                 if (client != null) {
-                    val imageId = context.resources.getIdentifier(imagem, "drawable", context.packageName)
                     val treino = Treino(
-                        id = 0,
+                        id = (System.currentTimeMillis() % Int.MAX_VALUE).toInt(),
                         nome = nome,
                         descricao = descricao,
-                        imagemUrl = imageId,
                         duracaoMin = duracao.toIntOrNull() ?: 0,
                         nivel = nivel
                     )
-                    trainerViewModel.addWorkout(client, treino)
+                    trainerViewModel.addWorkout(client.id, treino)
                     nome = ""
                     descricao = ""
-                    imagem = ""
                     duracao = ""
                     nivel = ""
                     selectedClient = null
@@ -80,6 +77,18 @@ fun TrainerMenuScreen(
             enabled = selectedClient != null && nome.isNotBlank() && duracao.isNotBlank()
         ) {
             Text("Criar treino")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        if (selectedClient != null) {
+            Text("Treinos do cliente:")
+            LazyColumn(
+                modifier = Modifier.height(200.dp)
+            ) {
+                items(trainerViewModel.clientWorkouts) { treino ->
+                    Text("- ${treino.nome}")
+                }
+            }
         }
     }
 }

@@ -17,7 +17,11 @@ fun RegisterScreen(
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var nome by remember { mutableStateOf("") }
     var trainer by remember { mutableStateOf(false) }
+    var especialidade by remember { mutableStateOf("") }
+    var descricao by remember { mutableStateOf("") }
+    var fotoUrl by remember { mutableStateOf("") }
     val role by authViewModel.role.collectAsState()
 
     LaunchedEffect(role) {
@@ -35,11 +39,27 @@ fun RegisterScreen(
     ) {
         OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
         OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Senha") })
+        OutlinedTextField(value = nome, onValueChange = { nome = it }, label = { Text("Nome") })
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(checked = trainer, onCheckedChange = { trainer = it })
             Text("Registrar como treinador")
         }
-        Button(onClick = { authViewModel.register(email, password, trainer) }) {
+        if (trainer) {
+            OutlinedTextField(value = especialidade, onValueChange = { especialidade = it }, label = { Text("Especialidade") })
+            OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") })
+            OutlinedTextField(value = fotoUrl, onValueChange = { fotoUrl = it }, label = { Text("URL da foto (opcional)") })
+        }
+        Button(onClick = {
+            authViewModel.register(
+                email,
+                password,
+                trainer,
+                nome,
+                especialidade.takeIf { trainer },
+                descricao.takeIf { trainer },
+                fotoUrl.takeIf { trainer && fotoUrl.isNotBlank() }
+            )
+        }) {
             Text("Registrar")
         }
     }

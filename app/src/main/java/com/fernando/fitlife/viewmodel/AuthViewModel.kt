@@ -20,9 +20,25 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    fun register(email: String, password: String, trainer: Boolean) {
+    fun register(
+        email: String,
+        password: String,
+        trainer: Boolean,
+        nome: String,
+        especialidade: String? = null,
+        descricao: String? = null,
+        fotoUrl: String? = null
+    ) {
         viewModelScope.launch {
-            val success = repo.register(email, password, if (trainer) "trainer" else "client")
+            val success = repo.register(
+                email,
+                password,
+                if (trainer) "trainer" else "client",
+                nome,
+                especialidade,
+                descricao,
+                fotoUrl
+            )
             if (success) {
                 _role.value = if (trainer) "trainer" else "client"
             }
