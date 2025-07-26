@@ -49,10 +49,14 @@ fun TrainerMenuScreen(
 
         Button(
             onClick = {
-                val client = selectedClient ?: return@onClick
-                val treino = Treino(0, nome, descricao, 0, 30, "")
-                trainerViewModel.addWorkout(client, treino)
-                nome = ""; descricao = ""; selectedClient = null
+                val client = selectedClient
+                if (client != null) {
+                    val treino = Treino(0, nome, descricao, 0, 30, "")
+                    trainerViewModel.addWorkout(client, treino)
+                    nome = ""
+                    descricao = ""
+                    selectedClient = null
+                }
             },
             enabled = selectedClient != null && nome.isNotBlank()
         ) {
