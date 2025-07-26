@@ -23,16 +23,26 @@ import com.fernando.fitlife.ui.components.BottomBar
 import com.fernando.fitlife.ui.components.BotaoFavorito
 import com.fernando.fitlife.ui.components.DetalheItem
 import com.fernando.fitlife.viewmodel.FavoritosViewModel
+import com.fernando.fitlife.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
-    favoritosViewModel: FavoritosViewModel = viewModel()
+    favoritosViewModel: FavoritosViewModel = viewModel(),
+    authViewModel: AuthViewModel = viewModel()
 ) {
     var expanded by remember { mutableStateOf(false) }
     val navBackStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry.value?.destination?.route ?: "home"
+
+    val role by authViewModel.role.collectAsState()
+
+    LaunchedEffect(Unit) {
+        if (authViewModel.currentUser != null) {
+            authViewModel.loadRole()
+        }
+    }
 
     var busca by remember { mutableStateOf("") }
     val treinosFiltrados = treinosMock.filter {
@@ -65,11 +75,30 @@ fun HomeScreen(
                                 navController.navigate("configuracoes")
                             }
                         )
+                        if (role == "trainer") {
+                            DropdownMenuItem(
+                                text = { Text("Treinador") },
+                                onClick = {
+                                    expanded = false
+                                    navController.navigate("trainer")
+                                }
+                            )
+                        }
                         DropdownMenuItem(
                             text = { Text("Ajuda") },
                             onClick = {
                                 expanded = false
                                 navController.navigate("ajuda")
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Sair") },
+                            onClick = {
+                                expanded = false
+                                authViewModel.logout()
+                                navController.navigate("login") {
+                                    popUpTo("home") { inclusive = true }
+                                }
                             }
                         )
                     }
