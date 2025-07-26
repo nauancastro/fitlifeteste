@@ -95,15 +95,19 @@ class TrainerRepository {
     }
 
     suspend fun uploadWorkoutImage(clientId: String, workoutId: String, uri: Uri): String {
-        val ref = storage.reference.child("workouts/$workoutId.jpg")
-        ref.putFile(uri).await()
-        val url = ref.downloadUrl.await().toString()
-        firestore.collection("users")
-            .document(clientId)
-            .collection("treinos")
-            .document(workoutId)
-            .update("imagemUrl", url)
-            .await()
-        return url
+        return try {
+            val ref = storage.reference.child("workouts/$workoutId.jpg")
+            ref.putFile(uri).await()
+            val url = ref.downloadUrl.await().toString()
+            firestore.collection("users")
+                .document(clientId)
+                .collection("treinos")
+                .document(workoutId)
+                .update("imagemUrl", url)
+                .await()
+            url
+        } catch (e: Exception) {
+            ""
+        }
     }
 }

@@ -48,7 +48,8 @@ fun FitLifeNavGraph(
                 navController = navController,
                 favoritosViewModel = favoritosViewModel,
                 authViewModel = authViewModel,
-                workoutsViewModel = workoutsViewModel
+                workoutsViewModel = workoutsViewModel,
+                trainerViewModel = trainerViewModel
             )
         }
 
