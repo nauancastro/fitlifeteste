@@ -54,11 +54,11 @@ fun TrainerMenuScreen(
             }
         }
 
+        val context = LocalContext.current
         Button(
             onClick = {
                 val client = selectedClient
                 if (client != null) {
-                    val context = androidx.compose.ui.platform.LocalContext.current
                     val imageId = context.resources.getIdentifier(imagem, "drawable", context.packageName)
                     val treino = Treino(
                         id = 0,
