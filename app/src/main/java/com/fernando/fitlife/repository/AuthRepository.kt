@@ -34,4 +34,12 @@ class AuthRepository {
     fun logout() {
         auth.signOut()
     }
+
+    suspend fun getRole(uid: String): String? {
+        return try {
+            firestore.collection("users").document(uid).get().await().getString("role")
+        } catch (e: Exception) {
+            null
+        }
+    }
 }

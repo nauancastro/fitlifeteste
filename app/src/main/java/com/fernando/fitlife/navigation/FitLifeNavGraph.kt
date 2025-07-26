@@ -40,7 +40,8 @@ fun FitLifeNavGraph(
         composable("home") {
             HomeScreen(
                 navController = navController,
-                favoritosViewModel = favoritosViewModel
+                favoritosViewModel = favoritosViewModel,
+                authViewModel = authViewModel
             )
         }
 

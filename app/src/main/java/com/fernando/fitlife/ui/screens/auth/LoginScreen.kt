@@ -21,11 +21,7 @@ fun LoginScreen(
 
     LaunchedEffect(role) {
         role?.let {
-            if (it == "trainer") {
-                navController.navigate("trainer") { popUpTo("login") { inclusive = true } }
-            } else {
-                navController.navigate("home") { popUpTo("login") { inclusive = true } }
-            }
+            navController.navigate("home") { popUpTo("login") { inclusive = true } }
         }
     }
 
@@ -33,7 +29,7 @@ fun LoginScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") })

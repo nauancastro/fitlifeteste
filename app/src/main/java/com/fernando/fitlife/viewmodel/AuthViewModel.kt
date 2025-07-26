@@ -33,4 +33,11 @@ class AuthViewModel : ViewModel() {
         repo.logout()
         _role.value = null
     }
+
+    fun loadRole() {
+        val uid = repo.currentUser?.uid ?: return
+        viewModelScope.launch {
+            _role.value = repo.getRole(uid)
+        }
+    }
 }
