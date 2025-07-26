@@ -20,11 +20,26 @@ class AuthRepository {
         }
     }
 
-    suspend fun register(email: String, password: String, role: String): Boolean {
+    suspend fun register(
+        email: String,
+        password: String,
+        role: String,
+        nome: String,
+        especialidade: String? = null,
+        descricao: String? = null,
+        fotoUrl: String? = null
+    ): Boolean {
         return try {
             auth.createUserWithEmailAndPassword(email, password).await()
             val uid = auth.currentUser!!.uid
-            firestore.collection("users").document(uid).set(mapOf("role" to role)).await()
+            val data = mutableMapOf<String, Any>(
+                "role" to role,
+                "nome" to nome
+            )
+            especialidade?.let { data["especialidade"] = it }
+            descricao?.let { data["descricao"] = it }
+            fotoUrl?.let { data["fotoUrl"] = it }
+            firestore.collection("users").document(uid).set(data).await()
             true
         } catch (e: Exception) {
             false

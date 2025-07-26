@@ -19,6 +19,7 @@ import com.fernando.fitlife.viewmodel.FavoritosPersonalViewModel
 import com.fernando.fitlife.viewmodel.SettingsViewModel
 import com.fernando.fitlife.viewmodel.AuthViewModel
 import com.fernando.fitlife.viewmodel.TrainerViewModel
+import com.fernando.fitlife.viewmodel.WorkoutsViewModel
 import com.fernando.fitlife.worker.SyncWorker
 import java.util.concurrent.TimeUnit
 
@@ -29,6 +30,7 @@ class MainActivity : ComponentActivity() {
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val authViewModel: AuthViewModel by viewModels()
     private val trainerViewModel: TrainerViewModel by viewModels()
+    private val workoutsViewModel: WorkoutsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +43,8 @@ class MainActivity : ComponentActivity() {
                 favoritosPersonalViewModel = favoritosPersonalViewModel,
                 settingsViewModel = settingsViewModel,
                 authViewModel = authViewModel,
-                trainerViewModel = trainerViewModel
+                trainerViewModel = trainerViewModel,
+                workoutsViewModel = workoutsViewModel
             )
         }
     }

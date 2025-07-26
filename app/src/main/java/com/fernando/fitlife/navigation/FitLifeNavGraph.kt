@@ -12,6 +12,7 @@ import com.fernando.fitlife.viewmodel.FavoritosPersonalViewModel
 import com.fernando.fitlife.viewmodel.SettingsViewModel
 import com.fernando.fitlife.viewmodel.AuthViewModel
 import com.fernando.fitlife.viewmodel.TrainerViewModel
+import com.fernando.fitlife.viewmodel.WorkoutsViewModel
 
 @Composable
 fun FitLifeNavGraph(
@@ -20,7 +21,8 @@ fun FitLifeNavGraph(
     favoritosPersonalViewModel: FavoritosPersonalViewModel,
     settingsViewModel: SettingsViewModel,
     authViewModel: AuthViewModel,
-    trainerViewModel: TrainerViewModel
+    trainerViewModel: TrainerViewModel,
+    workoutsViewModel: WorkoutsViewModel
 ) {
     val startDestination = if (authViewModel.currentUser == null) "login" else "home"
     NavHost(navController = navController, startDestination = startDestination) {
@@ -34,23 +36,30 @@ fun FitLifeNavGraph(
         }
 
         composable("trainer") {
-            TrainerMenuScreen(navController = navController, trainerViewModel = trainerViewModel)
+            TrainerMenuScreen(
+                navController = navController,
+                trainerViewModel = trainerViewModel,
+                authViewModel = authViewModel
+            )
         }
 
         composable("home") {
             HomeScreen(
                 navController = navController,
                 favoritosViewModel = favoritosViewModel,
-                authViewModel = authViewModel
+                authViewModel = authViewModel,
+                workoutsViewModel = workoutsViewModel,
+                trainerViewModel = trainerViewModel
             )
         }
 
         composable("detalhes/{treinoId}") { backStackEntry ->
-            val treinoId = backStackEntry.arguments?.getString("treinoId")?.toIntOrNull() ?: 0
+            val treinoId = backStackEntry.arguments?.getString("treinoId") ?: ""
             DetalhesScreen(
                 treinoId = treinoId,
                 navController = navController,
-                favoritosViewModel = favoritosViewModel
+                favoritosViewModel = favoritosViewModel,
+                workoutsViewModel = workoutsViewModel
             )
         }
 
@@ -73,7 +82,8 @@ fun FitLifeNavGraph(
         composable("personais") {
             PersonaisScreen(
                 navController = navController,
-                favoritosViewModel = favoritosPersonalViewModel
+                favoritosViewModel = favoritosPersonalViewModel,
+                trainerViewModel = trainerViewModel
             )
         }
 
