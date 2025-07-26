@@ -91,6 +91,16 @@ fun HomeScreen(
                                 navController.navigate("ajuda")
                             }
                         )
+                        DropdownMenuItem(
+                            text = { Text("Sair") },
+                            onClick = {
+                                expanded = false
+                                authViewModel.logout()
+                                navController.navigate("login") {
+                                    popUpTo("home") { inclusive = true }
+                                }
+                            }
+                        )
                     }
                 }
             )
