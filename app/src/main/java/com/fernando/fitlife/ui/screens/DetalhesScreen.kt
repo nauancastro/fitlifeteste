@@ -19,7 +19,7 @@ import com.fernando.fitlife.ui.components.DetalheItem
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetalhesScreen(
-    treinoId: Int,
+    treinoId: String,
     navController: NavController,
     favoritosViewModel: FavoritosViewModel = viewModel(),
     workoutsViewModel: WorkoutsViewModel = viewModel()

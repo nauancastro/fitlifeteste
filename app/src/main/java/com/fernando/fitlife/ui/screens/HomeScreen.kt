@@ -43,6 +43,7 @@ fun HomeScreen(
         if (authViewModel.currentUser != null) {
             authViewModel.loadRole()
             workoutsViewModel.loadWorkouts(authViewModel.currentUser!!.uid)
+            favoritosViewModel.setUser(authViewModel.currentUser!!.uid)
         }
     }
 
@@ -97,6 +98,7 @@ fun HomeScreen(
                             text = { Text("Sair") },
                             onClick = {
                                 expanded = false
+                                favoritosViewModel.clearInMemory()
                                 authViewModel.logout()
                                 navController.navigate("login") {
                                     popUpTo("home") { inclusive = true }

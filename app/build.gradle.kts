@@ -78,6 +78,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
 
     // Coroutines support for Task APIs
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")

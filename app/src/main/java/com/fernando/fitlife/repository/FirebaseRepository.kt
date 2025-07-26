@@ -8,10 +8,7 @@ class FirebaseRepository {
     private val auth = FirebaseAuth.getInstance()
     private val database = FirebaseDatabase.getInstance().getReference("users")
 
-    fun syncFavoritos(favoritos: List<Treino>) {
-        val userId = auth.currentUser?.uid
-        if (userId != null) {
-            database.child(userId).child("favoritos").setValue(favoritos)
-        }
+    fun syncFavoritos(userId: String, favoritos: List<Treino>) {
+        database.child(userId).child("favoritos").setValue(favoritos)
     }
 }

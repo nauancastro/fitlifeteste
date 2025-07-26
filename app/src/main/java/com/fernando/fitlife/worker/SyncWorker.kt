@@ -16,8 +16,10 @@ class SyncWorker(
         val database = FitLifeDatabase.getDatabase(applicationContext)
         val firebaseRepository = FirebaseRepository()
 
-        val favoritos = database.treinoDao().getFavoritos().first()
-        firebaseRepository.syncFavoritos(favoritos)
+        val userId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid
+            ?: return Result.success()
+        val favoritos = database.treinoDao().getFavoritos(userId).first()
+        firebaseRepository.syncFavoritos(userId, favoritos)
 
         return Result.success()
     }

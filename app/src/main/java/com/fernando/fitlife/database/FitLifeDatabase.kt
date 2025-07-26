@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.fernando.fitlife.model.Treino
 
-@Database(entities = [Treino::class], version = 1, exportSchema = false)
+@Database(entities = [Treino::class], version = 2, exportSchema = false)
 abstract class FitLifeDatabase : RoomDatabase() {
 
     abstract fun treinoDao(): TreinoDao

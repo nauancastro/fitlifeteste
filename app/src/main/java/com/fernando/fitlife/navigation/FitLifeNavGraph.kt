@@ -36,7 +36,11 @@ fun FitLifeNavGraph(
         }
 
         composable("trainer") {
-            TrainerMenuScreen(navController = navController, trainerViewModel = trainerViewModel)
+            TrainerMenuScreen(
+                navController = navController,
+                trainerViewModel = trainerViewModel,
+                authViewModel = authViewModel
+            )
         }
 
         composable("home") {
@@ -49,7 +53,7 @@ fun FitLifeNavGraph(
         }
 
         composable("detalhes/{treinoId}") { backStackEntry ->
-            val treinoId = backStackEntry.arguments?.getString("treinoId")?.toIntOrNull() ?: 0
+            val treinoId = backStackEntry.arguments?.getString("treinoId") ?: ""
             DetalhesScreen(
                 treinoId = treinoId,
                 navController = navController,
