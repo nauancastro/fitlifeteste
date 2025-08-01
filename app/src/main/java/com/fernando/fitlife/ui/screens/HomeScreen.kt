@@ -40,6 +40,8 @@ fun HomeScreen(
 ) {
     var expanded by remember { mutableStateOf(false) }
     var uploadTarget by remember { mutableStateOf<Pair<String, String>?>(null) }
+    val trainerMessage by trainerViewModel.message.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
     val imageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         val target = uploadTarget
         if (uri != null && target != null) {
@@ -60,6 +62,13 @@ fun HomeScreen(
         }
     }
 
+    LaunchedEffect(trainerMessage) {
+        trainerMessage?.let {
+            snackbarHostState.showSnackbar(it)
+            trainerViewModel.clearMessage()
+        }
+    }
+
     var busca by remember { mutableStateOf("") }
     val trainerTreinos = trainerViewModel.trainerWorkouts.filter {
         it.treino.nome.contains(busca, ignoreCase = true)
@@ -69,6 +78,7 @@ fun HomeScreen(
     }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text("FitLife") },
