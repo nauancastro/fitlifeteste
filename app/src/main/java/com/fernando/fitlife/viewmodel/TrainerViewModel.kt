@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fernando.fitlife.model.Client
@@ -27,6 +29,13 @@ class TrainerViewModel : ViewModel() {
 
     var trainerWorkouts by mutableStateOf<List<TrainerWorkout>>(emptyList())
         private set
+
+    private val _message = MutableStateFlow<String?>(null)
+    val message: StateFlow<String?> = _message
+
+    fun clearMessage() {
+        _message.value = null
+    }
 
     fun loadClients() {
         viewModelScope.launch {
@@ -69,8 +78,13 @@ class TrainerViewModel : ViewModel() {
 
     fun uploadImage(clientId: String, workoutId: String, uri: Uri, trainerId: String) {
         viewModelScope.launch {
-            repo.uploadWorkoutImage(clientId, workoutId, uri)
-            loadTrainerWorkouts(trainerId)
+            val url = repo.uploadWorkoutImage(clientId, workoutId, uri)
+            if (url.isNotBlank()) {
+                _message.value = "Imagem enviada"
+                loadTrainerWorkouts(trainerId)
+            } else {
+                _message.value = "Falha ao enviar imagem"
+            }
         }
     }
 }

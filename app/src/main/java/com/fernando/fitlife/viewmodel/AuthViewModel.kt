@@ -14,9 +14,22 @@ class AuthViewModel : ViewModel() {
     private val _role = MutableStateFlow<String?>(null)
     val role: StateFlow<String?> = _role
 
+    private val _message = MutableStateFlow<String?>(null)
+    val message: StateFlow<String?> = _message
+
+    fun clearMessage() {
+        _message.value = null
+    }
+
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            _role.value = repo.login(email, password)
+            val result = repo.login(email, password)
+            if (result != null) {
+                _role.value = result
+                _message.value = "Login realizado com sucesso"
+            } else {
+                _message.value = "Falha ao realizar login"
+            }
         }
     }
 
@@ -41,6 +54,9 @@ class AuthViewModel : ViewModel() {
             )
             if (success) {
                 _role.value = if (trainer) "trainer" else "client"
+                _message.value = "Conta criada com sucesso"
+            } else {
+                _message.value = "Erro ao criar conta"
             }
         }
     }
