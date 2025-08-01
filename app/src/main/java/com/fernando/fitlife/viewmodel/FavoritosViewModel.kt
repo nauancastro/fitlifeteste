@@ -41,13 +41,17 @@ class FavoritosViewModel(application: Application) : AndroidViewModel(applicatio
     fun adicionar(treino: Treino) {
         val uid = currentUserId ?: return
         if (treino !in _favoritos) {
+            _favoritos.add(treino)
             viewModelScope.launch { repo.addFavorite(treino, uid) }
         }
     }
 
     // Remove um treino da lista de favoritos
     fun remover(treino: Treino) {
-        viewModelScope.launch { repo.removeFavorite(treino) }
+        if (treino in _favoritos) {
+            _favoritos.remove(treino)
+            viewModelScope.launch { repo.removeFavorite(treino) }
+        }
     }
 
     // Verifica se um treino está na lista de favoritos

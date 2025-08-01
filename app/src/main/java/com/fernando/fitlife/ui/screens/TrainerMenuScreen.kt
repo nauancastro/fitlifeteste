@@ -1,5 +1,4 @@
 package com.fernando.fitlife.ui.screens
-
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,7 +15,6 @@ import com.fernando.fitlife.model.Treino
 import com.fernando.fitlife.model.TrainerWorkout
 import com.fernando.fitlife.viewmodel.AuthViewModel
 import com.fernando.fitlife.viewmodel.TrainerViewModel
-
 @Composable
 fun TrainerMenuScreen(
     navController: NavController,
@@ -29,33 +27,39 @@ fun TrainerMenuScreen(
     var nivel by remember { mutableStateOf("") }
     var selectedClient by remember { mutableStateOf<com.fernando.fitlife.model.Client?>(null) }
     var uploadTarget by remember { mutableStateOf<Pair<String, String>?>(null) }
+    val message by trainerViewModel.message.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
     val imageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         val target = uploadTarget
         if (uri != null && target != null) {
             trainerViewModel.uploadImage(target.first, target.second, uri, authViewModel.currentUser!!.uid)
         }
     }
-
     LaunchedEffect(Unit) {
         trainerViewModel.loadClients()
         authViewModel.currentUser?.uid?.let { trainerViewModel.loadTrainerWorkouts(it) }
     }
-
     LaunchedEffect(selectedClient) {
         selectedClient?.let { trainerViewModel.loadWorkouts(it.id) }
     }
-
+    LaunchedEffect(message) {
+        message?.let {
+            snackbarHostState.showSnackbar(it)
+            trainerViewModel.clearMessage()
+        }
+    }
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { padding ->
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .padding(padding),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         OutlinedTextField(value = nome, onValueChange = { nome = it }, label = { Text("Nome do treino") })
         OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") })
         OutlinedTextField(value = duracao, onValueChange = { duracao = it }, label = { Text("Duração em minutos") })
         OutlinedTextField(value = nivel, onValueChange = { nivel = it }, label = { Text("Nível") })
-
         Text("Selecione o cliente:")
         LazyColumn(modifier = Modifier.height(150.dp)) {
             items(trainerViewModel.clients) { client ->
@@ -68,7 +72,6 @@ fun TrainerMenuScreen(
                 }
             }
         }
-
         Button(
             onClick = {
                 val client = selectedClient
@@ -94,7 +97,6 @@ fun TrainerMenuScreen(
         ) {
             Text("Criar treino")
         }
-
         if (trainerViewModel.trainerWorkouts.isNotEmpty()) {
             Text("Seus treinos:")
             LazyColumn(modifier = Modifier.height(200.dp)) {
@@ -121,7 +123,6 @@ fun TrainerMenuScreen(
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
-
         Spacer(modifier = Modifier.height(16.dp))
         if (selectedClient != null) {
             Text("Treinos do cliente:")
@@ -134,4 +135,5 @@ fun TrainerMenuScreen(
             }
         }
     }
+}
 }

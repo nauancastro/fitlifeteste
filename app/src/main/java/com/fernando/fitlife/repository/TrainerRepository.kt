@@ -96,7 +96,7 @@ class TrainerRepository {
 
     suspend fun uploadWorkoutImage(clientId: String, workoutId: String, uri: Uri): String {
         return try {
-            val ref = storage.reference.child("workouts/$workoutId.jpg")
+            val ref = storage.reference.child("workouts/${clientId}_$workoutId.jpg")
             ref.putFile(uri).await()
             val url = ref.downloadUrl.await().toString()
             firestore.collection("users")
