@@ -13,6 +13,8 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.fernando.fitlife.viewmodel.FavoritosViewModel
 import com.fernando.fitlife.viewmodel.WorkoutsViewModel
+import com.fernando.fitlife.viewmodel.AuthViewModel
+import com.fernando.fitlife.viewmodel.TrainerViewModel
 import com.fernando.fitlife.ui.components.BotaoFavorito
 import com.fernando.fitlife.ui.components.DetalheItem
 
@@ -22,9 +24,16 @@ fun DetalhesScreen(
     treinoId: String,
     navController: NavController,
     favoritosViewModel: FavoritosViewModel = viewModel(),
-    workoutsViewModel: WorkoutsViewModel = viewModel()
+    workoutsViewModel: WorkoutsViewModel = viewModel(),
+    trainerViewModel: TrainerViewModel = viewModel(),
+    authViewModel: AuthViewModel = viewModel()
 ) {
-    val treino = workoutsViewModel.workouts.find { it.id == treinoId } ?: return
+    val role by authViewModel.role.collectAsState()
+    val treino = if (role == "trainer") {
+        trainerViewModel.trainerWorkouts.find { it.treino.id == treinoId }?.treino
+    } else {
+        workoutsViewModel.workouts.find { it.id == treinoId }
+    } ?: return
     var mostrarDescricao by remember { mutableStateOf(true) }
 
     val isFavorito by remember { derivedStateOf { favoritosViewModel.isFavorito(treino) } }

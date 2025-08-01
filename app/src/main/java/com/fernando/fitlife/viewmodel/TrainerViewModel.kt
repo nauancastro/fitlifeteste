@@ -82,6 +82,7 @@ class TrainerViewModel : ViewModel() {
             if (url.isNotBlank()) {
                 _message.value = "Imagem enviada"
                 loadTrainerWorkouts(trainerId)
+                loadWorkouts(clientId)
             } else {
                 _message.value = "Falha ao enviar imagem"
             }
